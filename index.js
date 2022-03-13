@@ -15,8 +15,8 @@ app.get('/video', (req, res) => {
     res.status(400).send("Requires Range header");
   }
   const vdoSize = fs.statSync('./v1.mp4').size
-  
-  const CHUNK_SIZE = 10 ** 6 * 20;
+
+  const CHUNK_SIZE = 10 ** 6;
   const start = Number(range.replace(/\D/g, ""));
   const end = Math.min(start + CHUNK_SIZE, vdoSize - 1);
   const contentLength = end - start + 1;
@@ -28,7 +28,7 @@ app.get('/video', (req, res) => {
   };
   res.writeHead(206, headers);
 
-  const vdoStream = fs.createReadStream('./v1.mp4')
+  const vdoStream = fs.createReadStream('./v1.mp4', { start, end });
   vdoStream.pipe(res)
 })
 
